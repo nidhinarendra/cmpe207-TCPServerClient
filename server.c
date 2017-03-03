@@ -1,5 +1,12 @@
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument */
+/*Write TCP client and server programs that the client passes a greeting message
+ *to the server. The server receives the message, counts the number of characters
+ *in the message, and sends the count back to the client. The client then
+ *receives the value, compares it to its count, and prints out both the message
+ *and the count.
+ */
+
+/*****SERVER PROGRAM *****/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +15,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+//Function to display the errors whenever the system calls fail.
 void error(const char *msg)
 {
 	perror(msg);
@@ -16,11 +24,10 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-	int sockfd, newsockfd, portno;
-	socklen_t clilen;
+	int sockfd, newsockfd, portno,rwSuccess, lengthOfMessageReceived;
+	socklen_t client_length;
 	char buffer[256];
 	struct sockaddr_in serv_addr, cli_addr;
-	int rwSuccess, lengthOfMessageReceived;
 
 	if (argc < 2) {
 		fprintf(stderr,"ERROR, no port provided\n");
@@ -43,8 +50,8 @@ int main(int argc, char *argv[])
 		error("ERROR on binding");
 
 	listen(sockfd,5);
-	clilen = sizeof(cli_addr);
-	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+	client_length = sizeof(cli_addr);
+	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &client_length);
 
 	if (newsockfd < 0)
 		error("ERROR on accept");
@@ -53,9 +60,9 @@ int main(int argc, char *argv[])
 	rwSuccess = read(newsockfd,buffer,255);
 
 	if (rwSuccess < 0) error("ERROR reading from socket");
-	printf("Here is the message: %s\n",buffer);
+	//printf("The message: %s\n",buffer);
 	lengthOfMessageReceived = strlen(buffer);
-	printf("%d\n", lengthOfMessageReceived);
+	//printf("%d\n", lengthOfMessageReceived);
 	rwSuccess = write(newsockfd,&lengthOfMessageReceived,lengthOfMessageReceived);
 
 	if (rwSuccess < 0) error("ERROR writing to socket");

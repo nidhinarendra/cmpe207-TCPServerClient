@@ -1,3 +1,12 @@
+/*Write TCP client and server programs that the client passes a greeting message
+ *to the server. The server receives the message, counts the number of characters
+ *in the message, and sends the count back to the client. The client then
+ *receives the value, compares it to its count, and prints out both the message
+ *and the count.
+ */
+
+/*****CLIENT PROGRAM *****/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,11 +24,10 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-	int sockfd, portno, n;
+	int sockfd, portno, rwSuccess;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
-	char buffer[256];
-	int lengthOfMessageSent;
+	char storageBuffer[256];
 
 	if (argc < 3) {
 		fprintf(stderr,"usage %s hostname port\n", argv[0]);
@@ -48,25 +56,27 @@ int main(int argc, char *argv[])
 		error("ERROR connecting");
 
 	printf("Please enter the welcome message: ");
-	bzero(buffer,256);
-	fgets(buffer,255,stdin);
-	n = write(sockfd,buffer,strlen(buffer));
+	bzero(storageBuffer,256);
+	fgets(storageBuffer, 256, stdin);
+	int lengthOfMessageSent = strlen(storageBuffer);
 
-	if (n < 0)
+	rwSuccess = write(sockfd, storageBuffer, strlen(storageBuffer));
+	if (rwSuccess < 0)
 		error("ERROR writing to socket");
 
-	lengthOfMessageSent = strlen(buffer);
-	int reponse_value;
-	n = read(sockfd, &reponse_value, 255);
 
-	if (n < 0)
+	int reponse_value;
+	rwSuccess = read(sockfd, &reponse_value, 255);
+	if (rwSuccess < 0)
 		error("ERROR reading from socket");
 
 	if (reponse_value == lengthOfMessageSent){
-		printf("From the server %d\n", reponse_value);
+		printf("Message: %s\n", storageBuffer);
+		printf("Length: %d\n", reponse_value);
 	}
 	else {
-		printf("Error: client-data-length:%d != server-response-length:%d \n",
+		printf("Error: client sent the data of length %d "
+				"and the length sent by the server is %d \n",
 				lengthOfMessageSent, reponse_value);
 	}
 
