@@ -5,7 +5,7 @@
  *and the count.
  */
 
-/*****CLIENT PROGRAM *****/
+/*****CLIENT PROGRAM*****/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	fgets(storageBuffer, 256, stdin);
 	int lengthOfMessageSent = strlen(storageBuffer);
 
-	rwSuccess = write(sockfd, storageBuffer, strlen(storageBuffer));
+	rwSuccess = write(sockfd, storageBuffer, lengthOfMessageSent);
 	if (rwSuccess < 0)
 		error("ERROR writing to socket");
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		error("ERROR reading from socket");
 
 	if (reponse_value == lengthOfMessageSent){
-		printf("Message: %s\n", storageBuffer);
+		printf("Message: %s", storageBuffer);
 		printf("Length: %d\n", reponse_value);
 	}
 	else {

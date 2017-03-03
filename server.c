@@ -5,7 +5,7 @@
  *and the count.
  */
 
-/*****SERVER PROGRAM *****/
+/*****SERVER PROGRAM*****/
 
 #include <stdio.h>
 #include <stdlib.h>
